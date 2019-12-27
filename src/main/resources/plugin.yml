@@ -1,0 +1,3 @@
+name: DemLib
+version: ${project.version}
+main: com.demeng7215.demlib.DemLibPlugin
