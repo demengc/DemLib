@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Creates a log / plain text (.txt) file for your plugin.
@@ -35,15 +35,13 @@ public class CustomLog {
 
 		final Plugin i = DemLib.getPlugin();
 
-		File dataFolder = i.getDataFolder();
+		File dataFolder = new File(i.getDataFolder().getPath() + File.separator + "logs");
 		if (!dataFolder.exists()) {
-			dataFolder.mkdir();
+			dataFolder.mkdirs();
 		}
 
-		this.logFile = new File(i.getDataFolder(), logName);
-		if (!logFile.exists()) {
-			logFile.createNewFile();
-		}
+		this.logFile = new File(dataFolder, logName + ".txt");
+		if (!this.logFile.exists()) this.logFile.createNewFile();
 	}
 
 	/**
@@ -58,14 +56,12 @@ public class CustomLog {
 		PrintWriter pw = new PrintWriter(fw);
 
 		if (includeDateTime) {
-			Date now = new Date();
-			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+			LocalDateTime now = LocalDateTime.now();
 
-			pw.println("[" + format.format(now) + "] " + info);
+			pw.println("[" + dtf.format(now) + "] " + info);
 
-		} else {
-			pw.println(info);
-		}
+		} else pw.println(info);
 
 		pw.flush();
 		pw.close();
