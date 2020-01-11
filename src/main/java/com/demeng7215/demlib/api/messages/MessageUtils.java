@@ -5,12 +5,15 @@ import com.demeng7215.demlib.api.Common;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public final class MessageUtils {
@@ -28,11 +31,29 @@ public final class MessageUtils {
 	/**
 	 * Colors a string containing color codes.
 	 *
-	 * @param s The string to colorize
+	 * @param messages The message to colorize
 	 * @return A colored message
 	 */
-	public static String colorize(String s) {
-		return ChatColor.translateAlternateColorCodes('&', s);
+	public static String colorize(String... messages) {
+		return colorize(StringUtils.join(messages, "\n"));
+	}
+
+	/**
+	 * Colorized a list of colored non-null list values.
+	 *
+	 * @param list The list to colorize
+	 * @return A colorized list of non-null values
+	 */
+	public static List<String> colorize(List<String> list) {
+		final List<String> copy = new ArrayList<>(list);
+
+		for (int i = 0; i < copy.size(); i++) {
+			final String message = copy.get(i);
+
+			if (message != null) copy.set(i, colorize(message));
+		}
+
+		return copy;
 	}
 
 	/**
