@@ -1,7 +1,7 @@
 package com.demeng7215.demlib.listeners;
 
-import com.demeng7215.demlib.api.menus.Menu;
-import com.demeng7215.demlib.api.menus.PagedMenu;
+import com.demeng7215.demlib.api.menus.CustomMenu;
+import com.demeng7215.demlib.api.menus.CustomPagedMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,12 +20,12 @@ public class MenuListener implements Listener {
 
 		final Player p = (Player) e.getWhoClicked();
 
-		final UUID inventoryUUID = Menu.getOpenInventories().get(p.getUniqueId());
+		final UUID inventoryUUID = CustomMenu.getOpenInventories().get(p.getUniqueId());
 
 		if (inventoryUUID != null) {
 			e.setCancelled(true);
 
-			final Consumer<InventoryClickEvent> actions = Menu.getInventories().get(inventoryUUID)
+			final Consumer<InventoryClickEvent> actions = CustomMenu.getInventories().get(inventoryUUID)
 					.getActions().get(e.getSlot());
 
 			if (actions != null) actions.accept(e);
@@ -34,13 +34,13 @@ public class MenuListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryClose(InventoryCloseEvent e) {
-		Menu.getOpenInventories().remove(e.getPlayer().getUniqueId());
-		PagedMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
+		CustomMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
+		CustomPagedMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		Menu.getOpenInventories().remove(e.getPlayer().getUniqueId());
-		PagedMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
+		CustomMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
+		CustomPagedMenu.getOpenInventories().remove(e.getPlayer().getUniqueId());
 	}
 }

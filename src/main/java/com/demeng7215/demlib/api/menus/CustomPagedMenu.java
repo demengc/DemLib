@@ -11,9 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class PagedMenu {
+public class CustomPagedMenu {
 
-	public List<Menu> pages;
+	public List<CustomMenu> pages;
 	private int currentPage;
 
 	@Getter
@@ -21,39 +21,39 @@ public class PagedMenu {
 
 	private UUID uuid;
 
-	public PagedMenu(int slots, List<ItemStack> items, String name, Consumer<InventoryClickEvent> actions,
-					 PagedMenuPreferences prefs) {
+	public CustomPagedMenu(int slots, List<ItemStack> items, String name, Consumer<InventoryClickEvent> actions,
+						   PagedMenuPreferences prefs) {
 
 		this.uuid = UUID.randomUUID();
 		this.pages = new ArrayList<>();
 		this.currentPage = 0;
 
 		name = MessageUtils.colorize(name);
-		Menu page = newPage(slots, name.replace("%page%", "" + 1), prefs);
+		CustomMenu page = newPage(slots, name.replace("%page%", "" + 1), prefs);
 
-		int currentSlot = Menu.asSlot(prefs.getFromSlot());
+		int currentSlot = CustomMenu.asSlot(prefs.getFromSlot());
 
 		pages.add(page);
 
 		for (ItemStack item : items) {
 
-			if (page.getInventory().firstEmpty() == Menu.asSlot(prefs.getToSlot()) + 1) {
+			if (page.getInventory().firstEmpty() == CustomMenu.asSlot(prefs.getToSlot()) + 1) {
 
 				page = newPage(slots, name.replace("%page%", Integer.toString(pages.size() + 1)), prefs);
 
 				pages.add(page);
 
-				currentSlot = Menu.asSlot(prefs.getFromSlot());
+				currentSlot = CustomMenu.asSlot(prefs.getFromSlot());
 			}
 
-			page.setItem(new Button(currentSlot, item, actions));
+			page.setItem(new CustomButton(currentSlot, item, actions));
 			currentSlot++;
 		}
 
 		pages.get(0).setItem(prefs.getDummyBackButton());
 		pages.get(pages.size() - 1).setItem(prefs.getDummyNextButton());
 
-		for (Menu menu : pages)
+		for (CustomMenu menu : pages)
 			menu.setBackground(prefs.getBackground());
 	}
 
@@ -69,13 +69,13 @@ public class PagedMenu {
 		currentPage = index;
 	}
 
-	private Menu newPage(int slots, String name, PagedMenuPreferences prefs) {
+	private CustomMenu newPage(int slots, String name, PagedMenuPreferences prefs) {
 
-		final Menu menu = new Menu(slots, name);
+		final CustomMenu menu = new CustomMenu(slots, name);
 
 		if (prefs.isIncludeSeparator()) {
 			for (int i = 0; i < 9; i++)
-				menu.setItem(new Button(((prefs.getSeparatorRow() - 1) * 9) + i,
+				menu.setItem(new CustomButton(((prefs.getSeparatorRow() - 1) * 9) + i,
 						ItemBuilder.build(prefs.getSeparatorMaterial(), "&0", null), null));
 		}
 

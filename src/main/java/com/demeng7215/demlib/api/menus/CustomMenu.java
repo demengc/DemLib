@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class Menu {
+public class CustomMenu {
 
 	@Getter(AccessLevel.PRIVATE)
 	private final UUID uuid;
@@ -29,12 +29,12 @@ public class Menu {
 	private final Map<Integer, Consumer<InventoryClickEvent>> actions;
 
 	@Getter
-	private static final Map<UUID, Menu> inventories = new HashMap<>();
+	private static final Map<UUID, CustomMenu> inventories = new HashMap<>();
 
 	@Getter
 	public static final Map<UUID, UUID> openInventories = new HashMap<>();
 
-	public Menu(int size, String title) {
+	public CustomMenu(int size, String title) {
 
 		this.uuid = UUID.randomUUID();
 
@@ -46,10 +46,10 @@ public class Menu {
 	}
 
 	public void setItem(int slot, ItemStack stack, Consumer<InventoryClickEvent> actions) {
-		setItem(new Button(slot, stack, actions));
+		setItem(new CustomButton(slot, stack, actions));
 	}
 
-	public void setItem(Button button) {
+	public void setItem(CustomButton button) {
 		inventory.setItem(button.getSlot(), button.getStack());
 		if (button.getActions() != null) actions.put(button.getSlot(), button.getActions());
 	}
@@ -57,7 +57,7 @@ public class Menu {
 	public void setBackground(ItemStack material) {
 		for (int i = 0; i < inventory.getSize(); i++)
 			if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR)
-				setItem(new Button(i, ItemBuilder.build(material, "&0", null),
+				setItem(new CustomButton(i, ItemBuilder.build(material, "&0", null),
 						null));
 	}
 

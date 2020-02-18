@@ -1,6 +1,6 @@
 package com.demeng7215.demlib.preferences;
 
-import com.demeng7215.demlib.api.menus.Button;
+import com.demeng7215.demlib.api.menus.CustomButton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -18,16 +18,16 @@ public class PagedMenuPreferences {
 	private int toSlot;
 
 	@Getter
-	private Button backButton;
+	private CustomButton backButton;
 
 	@Getter
-	private Button nextButton;
+	private CustomButton nextButton;
 
 	@Getter
-	private Button dummyBackButton;
+	private CustomButton dummyBackButton;
 
 	@Getter
-	private Button dummyNextButton;
+	private CustomButton dummyNextButton;
 
 	@Getter
 	private boolean includeSeparator;

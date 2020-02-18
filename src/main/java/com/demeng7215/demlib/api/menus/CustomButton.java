@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 
 @AllArgsConstructor
-public class Button {
+public class CustomButton {
 
 	@Getter
 	public int slot;
@@ -27,30 +27,30 @@ public class Button {
 		actions.accept(e);
 	}
 
-	public static Button fromConfig(CustomConfig config, String path) {
+	public static CustomButton fromConfig(CustomConfig config, String path) {
 
 		final FileConfiguration style = config.getConfig();
 
-		final int slot = Menu.asSlot(style.getInt(path + ".slot"));
+		final int slot = CustomMenu.asSlot(style.getInt(path + ".slot"));
 
 		final ItemStack stack = ItemBuilder.build(ItemBuilder.getMaterial(style.getString(path + ".material")),
 				style.getString(path + ".name"),
 				style.getStringList(path + ".lore"));
 
-		return new Button(slot, stack, null);
+		return new CustomButton(slot, stack, null);
 	}
 
-	public Button setSlot(int slot) {
+	public CustomButton setSlot(int slot) {
 		this.slot = slot;
 		return this;
 	}
 
-	public Button setActions(Consumer<InventoryClickEvent> actions) {
+	public CustomButton setActions(Consumer<InventoryClickEvent> actions) {
 		this.actions = actions;
 		return this;
 	}
 
-	public Button addData(String key, String value) {
-		return new Button(slot, NBTEditor.set(stack, value, key), actions);
+	public CustomButton addData(String key, String value) {
+		return new CustomButton(slot, NBTEditor.set(stack, value, key), actions);
 	}
 }
