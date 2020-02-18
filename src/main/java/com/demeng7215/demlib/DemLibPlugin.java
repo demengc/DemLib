@@ -2,15 +2,16 @@ package com.demeng7215.demlib;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * DemLib can be loaded as a plugin if you don't want to shade it.
+ */
 public final class DemLibPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("DemLib has been successfully loaded as a plugin.");
 	}
 
 	@Override
 	public void onDisable() {
-		getLogger().info("DemLib has been successfully disabled as a plugin.");
 	}
 }
