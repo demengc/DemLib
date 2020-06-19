@@ -15,7 +15,7 @@ public class DeveloperNotifications implements Listener {
 
 	public static void enableNotifications(String devUUID) {
 		uuid = devUUID;
-		Registerer.registerListeners(new DeveloperNotifications());
+		Registerer.registerListener(new DeveloperNotifications());
 		enabled = true;
 	}
 

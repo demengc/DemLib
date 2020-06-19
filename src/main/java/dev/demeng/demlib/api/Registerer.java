@@ -1,44 +1,48 @@
 package dev.demeng.demlib.api;
 
 import dev.demeng.demlib.DemLib;
+import dev.demeng.demlib.api.commands.CommandManager;
+import dev.demeng.demlib.api.commands.types.BaseCommand;
+import dev.demeng.demlib.api.commands.types.SubCommand;
+import dev.demeng.demlib.api.inputwaiter.InputWaiter;
+import dev.demeng.demlib.api.inputwaiter.InputWaiterManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Registerer {
+public final class Registerer {
 
-	private static final Plugin i = DemLib.getPlugin();
+  public static void registerCommand(BaseCommand base) {
+    CommandManager.getBaseCommands().add(base);
+    CommandManager.getSubCommands().put(base, Collections.emptyList());
+    DemLib.getPlugin().getCommand(base.getName()).setExecutor(new CommandManager());
+  }
 
-	public static void registerCommand(Command command) {
-		try {
+  public static void registerCommand(SubCommand sub) {
 
-			final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-			commandMapField.setAccessible(true);
+    final BaseCommand base =
+        CommandManager.getBaseCommands().stream()
+            .filter(cmd -> cmd.getName().equals(sub.getBaseCommand()))
+            .findFirst()
+            .orElse(null);
 
-			final CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
-			commandMap.register(command.getLabel(), command);
+    if (base == null) throw new IllegalArgumentException("Base command is null");
 
-		} catch (final Exception ignored) {
-		}
-	}
+    final List<SubCommand> tempList = new ArrayList<>(CommandManager.getSubCommands().get(base));
+    tempList.add(sub);
 
-	public static void registerListeners(Listener listeners) {
-		Bukkit.getPluginManager().registerEvents(listeners, i);
-	}
+    CommandManager.getSubCommands().put(base, tempList);
+  }
 
-	public static void registerListenersAdvanced(Event event, Listener listener,
-												 EventPriority priority, boolean ignoreCancelled) {
+  public static void registerListener(Listener listener) {
+    Bukkit.getPluginManager().registerEvents(listener, DemLib.getPlugin());
+  }
 
-		final Class<? extends Event> listenerEvent = event.getClass();
-		final EventExecutor eventExecutor = (EventExecutor) listener;
-
-		Bukkit.getPluginManager().registerEvent(listenerEvent, listener, priority, eventExecutor, i, ignoreCancelled);
-	}
+  public static void registerInputWaiter(InputWaiter waiter) {
+    InputWaiterManager.addWaiter(waiter);
+    waiter.onRequest();
+  }
 }

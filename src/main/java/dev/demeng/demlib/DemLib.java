@@ -4,7 +4,7 @@ import dev.demeng.demlib.api.Registerer;
 import dev.demeng.demlib.listeners.MenuListener;
 import lombok.Getter;
 import lombok.NonNull;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * DemLib - A useful library, util, and API.
@@ -18,7 +18,7 @@ public final class DemLib {
      */
     @NonNull
     @Getter
-    private static Plugin plugin;
+    private static JavaPlugin plugin;
 
     /**
      * Sets the plugin that will be using this API.
@@ -26,11 +26,11 @@ public final class DemLib {
      *
      * @param plugin The main class of your plugin.
      */
-    public static void setPlugin(Plugin plugin) {
+    public static void setPlugin(JavaPlugin plugin) {
 
         DemLib.plugin = plugin;
 
         // Register some things required for DemLib to work.
-        Registerer.registerListeners(new MenuListener());
+        Registerer.registerListener(new MenuListener());
     }
 }
