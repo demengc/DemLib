@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+/** The events that listen and handle player input. */
 public class PlayerInputListener implements Listener {
 
   @EventHandler

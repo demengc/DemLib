@@ -3,6 +3,7 @@ package dev.demeng.demlib.api.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/** Simple utils for commands. */
 public final class CommandUtils {
 
   public static boolean isPlayer(CommandSender sender) {
