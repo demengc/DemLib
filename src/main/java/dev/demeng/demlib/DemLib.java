@@ -6,6 +6,7 @@ import dev.demeng.demlib.api.menus.MenuListener;
 import dev.demeng.demlib.api.messages.MessageUtils;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -21,7 +22,7 @@ public final class DemLib {
   @NonNull @Getter private static JavaPlugin plugin;
 
   /** The command settings that will be used. */
-  @Getter private static CommandErrorMessages commandSettings;
+  @Getter @Setter private static CommandErrorMessages commandSettings;
 
   /**
    * Sets the plugin that will be using DemLib.
