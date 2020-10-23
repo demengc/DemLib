@@ -4,7 +4,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'java'
 }
-apply plugin: 'java'
 
 group = 'dev.demeng'
 version = '4.5.0'
