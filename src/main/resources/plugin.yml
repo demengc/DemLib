@@ -1,0 +1,4 @@
+name: DemLib
+version: DEV
+main: dev.demeng.demlib.core.DemLibPlugin
+api-version: 1.13
