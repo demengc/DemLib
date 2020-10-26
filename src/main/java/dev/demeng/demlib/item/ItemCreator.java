@@ -4,14 +4,17 @@ import dev.demeng.demlib.message.MessageUtils;
 import dev.demeng.demlib.xseries.XMaterial;
 import lombok.Builder;
 import lombok.Singular;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -142,5 +145,25 @@ public final class ItemCreator {
    */
   public static ItemStack getDummy(ItemStack stack) {
     return quickBuild(stack, "&0", null);
+  }
+
+  /**
+   * Get the skull item of the specified player.
+   *
+   * @param player The player to get the skull of.
+   * @return A skull item with the player's skin.
+   */
+  @SuppressWarnings("deprecation")
+  public static ItemStack getSkull(String player) {
+
+    final ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+    final SkullMeta meta = (SkullMeta) head.getItemMeta();
+
+    if (XMaterial.supports(12))
+      Objects.requireNonNull(meta).setOwningPlayer(Bukkit.getOfflinePlayer(player));
+    else Objects.requireNonNull(meta).setOwner(player);
+
+    head.setItemMeta(meta);
+    return head;
   }
 }
