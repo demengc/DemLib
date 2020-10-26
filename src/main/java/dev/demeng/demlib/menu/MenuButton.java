@@ -41,7 +41,7 @@ public class MenuButton {
     final ItemStack stack =
         ItemCreator.quickBuild(
             ItemCreator.getMaterial(config.getString(path + ".material")),
-                config.getString(path + ".name"),
+                config.getString(path + ".display-name"),
                 config.getStringList(path + ".lore"));
 
     return new MenuButton(slot, stack, null);
