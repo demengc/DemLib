@@ -1,41 +1,28 @@
 package dev.demeng.demlib.menu.paged;
 
 import dev.demeng.demlib.menu.MenuButton;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 /** A bunch of settings and preference options for paged menus. */
-@AllArgsConstructor
-public class PagedMenuSettings {
+public interface PagedMenuSettings {
 
-  /** The background material of the menu. */
-  @Getter private final ItemStack background;
+  ItemStack getBackgroundMaterial();
 
-  /** The starting slot for pagination. */
-  @Getter private final int fromSlot;
+  boolean hasSeparator();
 
-  /** The ending slot for pagination. */
-  @Getter private final int toSlot;
+  int getSeparatorRow();
 
-  /** The previous page button. */
-  @Getter private final MenuButton backButton;
+  ItemStack getSeparatorMaterial();
 
-  /** The next page button. */
-  @Getter private final MenuButton nextButton;
+  MenuButton getBackButton();
 
-  /** The previous page button when there are no more previous pages. */
-  @Getter private final MenuButton dummyBackButton;
+  MenuButton getNextButton();
 
-  /** The next page button when there are no more next pages. */
-  @Getter private final MenuButton dummyNextButton;
+  MenuButton getDummyBackButton();
 
-  /** Should there be a separation bar between the content and menu controls? */
-  @Getter private final boolean includeSeparator;
+  MenuButton getDummyNextButton();
 
-  /** The row of which the separator will be in. */
-  @Getter private final int separatorRow;
+  int getFromSlot();
 
-  /** The material that will be used for the separator. */
-  @Getter private final ItemStack separatorMaterial;
+  int getToSlot();
 }

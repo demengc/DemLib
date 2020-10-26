@@ -1,125 +1,119 @@
 package dev.demeng.demlib.menu.paged;
 
 import dev.demeng.demlib.item.ItemCreator;
+import dev.demeng.demlib.menu.IMenu;
 import dev.demeng.demlib.menu.Menu;
 import dev.demeng.demlib.menu.MenuButton;
 import dev.demeng.demlib.message.MessageUtils;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.function.Consumer;
 
-/** A custom menu with many pages. */
-public class PagedMenu {
+public abstract class PagedMenu implements IMenu {
 
-  public List<Menu> pages;
+  private final UUID uuid;
+  private final int slots;
+  private final String title;
+  private final PagedMenuSettings settings;
+  private final List<Menu> pages;
   private int currentPage;
 
   @Getter public static final Map<UUID, UUID> openInventories = new HashMap<>();
 
-  private final UUID uuid;
-
-  /**
-   * Create a new custom menu.
-   *
-   * @param slots The number of slots per page
-   * @param items The list of items that will be listed
-   * @param name The title of the menu
-   * @param actions The actions executed when any of the listed items are clicked
-   * @param prefs The settings for the menu
-   */
-  public PagedMenu(
-      int slots,
-      List<ItemStack> items,
-      String name,
-      Consumer<InventoryClickEvent> actions,
-      PagedMenuSettings prefs) {
-
+  protected PagedMenu(int slots, String title, PagedMenuSettings settings) {
     this.uuid = UUID.randomUUID();
+    this.slots = slots;
+    this.title = MessageUtils.colorize(title);
+    this.settings = settings;
     this.pages = new ArrayList<>();
     this.currentPage = 0;
+  }
 
-    name = MessageUtils.colorize(name);
-    Menu page = newPage(slots, name.replace("%page%", "" + 1), prefs);
+  protected void fill(List<MenuButton> buttons) {
 
-    int currentSlot = prefs.getFromSlot();
+    int currentSlot = settings.getFromSlot() - 1;
 
+    Menu page = new Page(slots, title.replace("%page%", "" + 1), settings);
     pages.add(page);
 
-    for (ItemStack item : items) {
+    for (MenuButton button : buttons) {
 
-      if (page.getInventory().firstEmpty() == prefs.getToSlot() + 1) {
+      if (currentSlot == settings.getToSlot()
+          || page.getInventory().firstEmpty() == settings.getToSlot() + 1
+          || page.getInventory().firstEmpty() == -1) {
 
-        page = newPage(slots, name.replace("%page%", Integer.toString(pages.size() + 1)), prefs);
-
+        page = new Page(slots, title.replace("%page%", String.valueOf(pages.size() + 1)), settings);
         pages.add(page);
 
-        currentSlot = prefs.getFromSlot();
+        currentSlot = settings.getFromSlot() - 1;
       }
 
-      page.setItem(new MenuButton(currentSlot, item, actions));
+      button.setSlot(currentSlot);
+      page.setItem(button);
       currentSlot++;
     }
 
-    pages.get(0).setItem(prefs.getDummyBackButton());
-    pages.get(pages.size() - 1).setItem(prefs.getDummyNextButton());
+    pages.get(0).setItem(settings.getDummyBackButton());
+    pages.get(pages.size() - 1).setItem(settings.getDummyNextButton());
 
-    for (Menu menu : pages) menu.setBackground(prefs.getBackground());
+    for (Menu menu : pages) menu.setBackground(settings.getBackgroundMaterial());
   }
 
-  /**
-   * Open the menu for a player.
-   *
-   * @param p
-   */
+  protected void setStaticItem(MenuButton button) {
+    for (Menu menu : pages) {
+      menu.setItem(button);
+    }
+  }
+
+  @Override
   public void open(Player p) {
     pages.get(0).open(p);
     openInventories.put(p.getUniqueId(), uuid);
     currentPage = 0;
   }
 
-  /**
-   * Open a specific page of the menu for a player.
-   *
-   * @param p
-   * @param index The index of the page
-   */
   public void open(Player p, int index) {
     pages.get(index).open(p);
     openInventories.put(p.getUniqueId(), uuid);
     currentPage = index;
   }
 
-  private Menu newPage(int slots, String name, PagedMenuSettings prefs) {
+  private class Page extends Menu {
 
-    final Menu menu = new Menu(slots, name);
+    public Page(int slots, String title, PagedMenuSettings settings) {
+      super(slots, title);
 
-    if (prefs.isIncludeSeparator()) {
-      for (int i = 0; i < 9; i++)
-        menu.setItem(
-            new MenuButton(
-                ((prefs.getSeparatorRow() - 1) * 9) + i,
-                ItemCreator.quickBuild(prefs.getSeparatorMaterial(), "&0", null),
-                null));
+      if (settings.hasSeparator())
+        for (int i = 0; i < 9; i++) {
+
+          final int slot = ((settings.getSeparatorRow() - 1) * 9) + i;
+          final ItemStack stack = getInventory().getItem(slot);
+
+          if (stack == null || stack.getType() == Material.AIR)
+            setItem(
+                new MenuButton(slot, ItemCreator.getDummy(settings.getSeparatorMaterial()), null));
+        }
+
+      setItem(
+          new MenuButton(
+              settings.getBackButton().getSlot(),
+              settings.getBackButton().getStack(),
+              event -> {
+                if (currentPage - 1 >= 0 && pages.get(currentPage - 1) != null)
+                  PagedMenu.this.open((Player) event.getWhoClicked(), currentPage - 1);
+              }));
+
+      setItem(
+          new MenuButton(
+              settings.getNextButton().getSlot(),
+              settings.getNextButton().getStack(),
+              event -> {
+                if (currentPage + 1 < pages.size() && pages.get(currentPage + 1) != null)
+                  PagedMenu.this.open((Player) event.getWhoClicked(), currentPage + 1);
+              }));
     }
-
-    final MenuButton backButton = prefs.getBackButton();
-    backButton.setActions(
-        event -> {
-          if (currentPage - 1 >= 0 && pages.get(currentPage - 1) != null)
-            open((Player) event.getWhoClicked(), currentPage - 1);
-        });
-
-    final MenuButton nextButton = prefs.getNextButton();
-    nextButton.setActions(
-        event -> {
-          if (currentPage + 1 < pages.size() && pages.get(currentPage + 1) != null)
-            open((Player) event.getWhoClicked(), currentPage + 1);
-        });
-
-    return menu;
   }
 }

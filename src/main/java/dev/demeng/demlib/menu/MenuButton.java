@@ -1,6 +1,5 @@
 package dev.demeng.demlib.menu;
 
-import dev.demeng.demlib.file.YamlFile;
 import dev.demeng.demlib.item.ItemCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,17 +34,15 @@ public class MenuButton {
    * @param path The path to the button configuration
    * @return A CustomButton without any actions
    */
-  public static MenuButton fromConfig(YamlFile config, String path) {
+  public static MenuButton fromConfig(FileConfiguration config, String path) {
 
-    final FileConfiguration style = config.getConfig();
-
-    final int slot = style.getInt(path + ".slot") - 1;
+    final int slot = config.getInt(path + ".slot") - 1;
 
     final ItemStack stack =
         ItemCreator.quickBuild(
-            ItemCreator.getMaterial(style.getString(path + ".material")),
-            style.getString(path + ".name"),
-            style.getStringList(path + ".lore"));
+            ItemCreator.getMaterial(config.getString(path + ".material")),
+                config.getString(path + ".name"),
+                config.getStringList(path + ".lore"));
 
     return new MenuButton(slot, stack, null);
   }
