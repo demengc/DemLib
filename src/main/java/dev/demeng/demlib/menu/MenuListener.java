@@ -15,8 +15,12 @@ import java.util.function.Consumer;
 /** All the listeners that manage custom menus. */
 public class MenuListener implements Listener {
 
-  @EventHandler(priority = EventPriority.HIGHEST)
+  @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
+
+    if (e.getRawSlot() != e.getSlot()) {
+      return;
+    }
 
     final Player p = (Player) e.getWhoClicked();
 

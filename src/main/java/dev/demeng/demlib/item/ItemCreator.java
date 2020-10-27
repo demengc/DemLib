@@ -113,8 +113,8 @@ public final class ItemCreator {
    * @return
    */
   public static ItemStack fromConfig(FileConfiguration config, String path) {
-    return ItemCreator.quickBuild(
-        ItemCreator.getMaterial(config.getString(path + ".material")),
+    return quickBuild(
+        getMaterial(config.getString(path + ".material")),
         config.getString(path + ".display-name"),
         config.getStringList(path + ".lore"));
   }

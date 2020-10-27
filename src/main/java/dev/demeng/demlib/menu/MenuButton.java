@@ -21,10 +21,10 @@ public class MenuButton {
   @Getter @Setter public ItemStack stack;
 
   /** The actions executed when the button is clicked. */
-  @Getter @Setter public Consumer<InventoryClickEvent> actions;
+  @Getter @Setter public Consumer<InventoryClickEvent> consumer;
 
   public void run(InventoryClickEvent e) {
-    actions.accept(e);
+    consumer.accept(e);
   }
 
   /**
@@ -36,13 +36,11 @@ public class MenuButton {
    */
   public static MenuButton fromConfig(FileConfiguration config, String path) {
 
-    final int slot = config.getInt(path + ".slot") - 1;
+    final int slot;
+    if (config.getInt(path + ".slot", -1) == -1) slot = -1;
+    else slot = config.getInt(path + ".slot", 0) - 1;
 
-    final ItemStack stack =
-        ItemCreator.quickBuild(
-            ItemCreator.getMaterial(config.getString(path + ".material")),
-                config.getString(path + ".display-name"),
-                config.getStringList(path + ".lore"));
+    final ItemStack stack = ItemCreator.fromConfig(config, path);
 
     return new MenuButton(slot, stack, null);
   }
