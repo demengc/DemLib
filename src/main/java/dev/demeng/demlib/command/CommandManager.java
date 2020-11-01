@@ -2,8 +2,8 @@ package dev.demeng.demlib.command;
 
 import dev.demeng.demlib.Common;
 import dev.demeng.demlib.command.model.BaseCommand;
-import dev.demeng.demlib.command.model.CommandHandler;
 import dev.demeng.demlib.command.model.SubCommand;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 
@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class CommandManager {
 
-  private static Map<String, BaseCommand> baseCommands = new HashMap<>();
-  private static Map<String, Map<String, SubCommand>> subCommands = new HashMap<>();
+  @Getter private static Map<String, BaseCommand> baseCommands = new HashMap<>();
+  @Getter private static Map<String, Map<String, SubCommand>> subCommands = new HashMap<>();
 
   public static void register(BaseCommand command) {
     baseCommands.put(command.getName(), command);

@@ -1,12 +1,14 @@
-package dev.demeng.demlib.command.model;
+package dev.demeng.demlib.command;
 
-import dev.demeng.demlib.command.CommandManager;
+import dev.demeng.demlib.command.model.BaseCommand;
+import dev.demeng.demlib.command.model.SubCommand;
 import dev.demeng.demlib.core.DemLib;
 import dev.demeng.demlib.message.MessageUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class CommandHandler extends BukkitCommand {
 
     if (args.length < 1) {
 
-      if (!checkBase(sender, args)) {
+      if (!checkBase(sender, label, args)) {
         return true;
       }
 
@@ -48,12 +50,12 @@ public class CommandHandler extends BukkitCommand {
       if (args[0].equalsIgnoreCase(entry.getKey())
           || Arrays.asList(entry.getValue().getAliases()).contains(args[0].toLowerCase())) {
 
-        final List<String> subArgs = Arrays.asList(args);
+        final List<String> subArgs = new ArrayList<>(Arrays.asList(args));
         subArgs.remove(0);
 
         final String[] subArgsArr = subArgs.toArray(new String[0]);
 
-        if (!checkSub(entry.getValue(), sender, subArgsArr)) {
+        if (!checkSub(entry.getValue(), sender, label, args[0], subArgsArr)) {
           return true;
         }
 
@@ -66,7 +68,7 @@ public class CommandHandler extends BukkitCommand {
       }
     }
 
-    if (!checkBase(sender, args)) {
+    if (!checkBase(sender, label, args)) {
       return true;
     }
 
@@ -78,7 +80,7 @@ public class CommandHandler extends BukkitCommand {
     return true;
   }
 
-  private boolean checkBase(CommandSender sender, String[] args) {
+  private boolean checkBase(CommandSender sender, String label, String[] args) {
 
     if (!(sender instanceof Player) && base.isPlayersOnly()) {
       MessageUtils.tell(sender, DemLib.getCommandMessages().getNotPlayer());
@@ -100,15 +102,15 @@ public class CommandHandler extends BukkitCommand {
           DemLib.getCommandMessages()
               .getInvalidArgs()
               .replace(
-                  "%usage%",
-                  "/" + base.getName() + (base.getUsage() != null ? " " + base.getUsage() : "")));
+                  "%usage%", "/" + label + (base.getUsage() != null ? " " + base.getUsage() : "")));
       return false;
     }
 
     return true;
   }
 
-  private boolean checkSub(SubCommand sub, CommandSender sender, String[] args) {
+  private boolean checkSub(
+      SubCommand sub, CommandSender sender, String baseLabel, String subLabel, String[] args) {
 
     if (!(sender instanceof Player) && sub.isPlayersOnly()) {
       MessageUtils.tell(sender, DemLib.getCommandMessages().getNotPlayer());
@@ -132,9 +134,9 @@ public class CommandHandler extends BukkitCommand {
               .replace(
                   "%usage%",
                   "/"
-                      + sub.getBaseName()
+                      + baseLabel
                       + " "
-                      + sub.getName()
+                      + subLabel
                       + (sub.getUsage() != null ? " " + sub.getUsage() : "")));
       return false;
     }
