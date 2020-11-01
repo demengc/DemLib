@@ -1,32 +1,34 @@
 package dev.demeng.demlib;
 
-import dev.demeng.demlib.command.CustomCommand;
+import dev.demeng.demlib.command.CommandManager;
+import dev.demeng.demlib.command.model.BaseCommand;
+import dev.demeng.demlib.command.model.SubCommand;
 import dev.demeng.demlib.core.DemLib;
 import dev.demeng.demlib.inputwaiter.InputWaiter;
 import dev.demeng.demlib.inputwaiter.InputWaiterManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandMap;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-
-import java.lang.reflect.Field;
 
 /** Utility class for quickly registering commands, listeners, and input waiters. */
 public final class Registerer {
 
   /**
-   * Register a custom command.
+   * Register a custom base command.
    *
-   * @param command The command to register.
+   * @param command The base command to register.
    */
-  public static void registerCommand(CustomCommand command)
-      throws NoSuchFieldException, IllegalAccessException {
+  public static void registerCommand(BaseCommand command) {
+    CommandManager.register(command);
+  }
 
-    final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-    commandMapField.setAccessible(true);
-
-    final CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
-    commandMap.register(Common.getName().toLowerCase(), command);
+  /**
+   * Register a custom sub-command.
+   *
+   * @param command The sub-command to register.
+   */
+  public static void registerCommand(SubCommand command) {
+    CommandManager.register(command);
   }
 
   /**
