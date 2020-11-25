@@ -1,7 +1,7 @@
 package dev.demeng.demlib.item;
 
+import com.cryptomorin.xseries.XMaterial;
 import dev.demeng.demlib.message.MessageUtils;
-import dev.demeng.demlib.xseries.XMaterial;
 import lombok.Builder;
 import lombok.Singular;
 import org.bukkit.Bukkit;

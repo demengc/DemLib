@@ -1,7 +1,5 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
 }
 
@@ -11,20 +9,21 @@ version = '4.8.0'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+shadowJar {
+    relocate 'com.zaxxer.hikari', 'dev.demeng.demlib.lib.hikari'
+    relocate 'com.cryptomorin.xseries', 'dev.demeng.demlib.lib.xseries'
+}
+
 repositories {
     mavenCentral()
     maven {
-        name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
     }
 }
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
+    compile 'com.github.cryptomorin:XSeries:7.6.0.0.1'
 
     compile 'com.zaxxer:HikariCP:3.4.5'
     // compile 'com.h2database:h2:1.4.200'
@@ -34,10 +33,4 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
-    }
 }

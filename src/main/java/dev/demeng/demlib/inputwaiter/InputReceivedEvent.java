@@ -1,6 +1,6 @@
 package dev.demeng.demlib.inputwaiter;
 
-import dev.demeng.demlib.xseries.message.Titles;
+import com.cryptomorin.xseries.messages.Titles;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
